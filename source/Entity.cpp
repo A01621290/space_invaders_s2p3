@@ -4,14 +4,20 @@
 
 //Read asset file into string
 std::string GetAsset(const std::string file_name){
+    std::cout << "Opening: " << file_name << std::endl;
     std::ifstream file(file_name);
     std::string read;
     std::string asset;
+    if(!file.is_open()){
+        std::cerr << "Could not open " << file_name << std::endl;
+        return "";
+    }
     while(std::getline(file, read)){
         asset += read + '\n';
     }
     file.close();
 
+    std::cout << "Read asset: " << std::endl << asset << std::endl;
     return asset;
 };
 
@@ -32,14 +38,17 @@ Entity::Entity(
         Type(Type)
 {
     Alive = true;//All entities start of alive
+    Immunity = false;//Starts at false
+    LastHit = 0;
+    CurrentFrame = 0;
 
     //Read asset_n into the Assets vector
     Assets.resize(Anim_Frames);
-    for(int i = 1; i <= Anim_Frames; i++){
+    for(int i = 0; i <= Anim_Frames - 1; i++){
+        std::cout << "Anim frame " << i << std::endl;
         Assets[i] = GetAsset(FirstAssetName + '_' + std::to_string(i));
     }
     std::cout << "New entity with following parameters.\n";
-    this->Print();
 };
 
 
@@ -57,16 +66,20 @@ float Entity::Right(void) const{
     return XPos + Width;
 };
 
+Ent_type Entity::getType(void) const{
+    return Type;
+};
 
 //Draw each entity
-void Entity::Draw(const X11& x11, unsigned int Frame){
+void Entity::Draw(const X11& x11){
     float currentY = YPos;
     float currentX = XPos;
-    bool nl = false;
+    bool ignore = false;
 
     //For each char in the current frame of assets it will paint
     //a square
-    for(char c : Assets[Frame]){
+    std::cout << "Drawing frame " << CurrentFrame << std::endl;
+    for(char c : Assets[CurrentFrame]){
         switch (c) {
             case (static_cast<char>(X11_Col_char::dark_blue)):
                 {
@@ -103,6 +116,12 @@ void Entity::Draw(const X11& x11, unsigned int Frame){
                     XSetForeground(x11.Disp, x11.gc, x11.Color[static_cast<int>(X11_Col::gray)].pixel);
                     break;
                 }
+            case ' ':
+                {
+                    currentX += Width/8;
+                    ignore = true;
+                    break;
+                }
             case '\n':
                 {
                     //Will add one to the height (going lowe)
@@ -113,19 +132,19 @@ void Entity::Draw(const X11& x11, unsigned int Frame){
                     currentX = XPos;
 
                     //Newline is set to true
-                    nl = true;
+                    ignore = true;
                     break;
                 }
         }
 
         //If last read character isn't a newline, it will draw 
         //a square. If not it skips to the next character
-        if(!nl){
+        if(!ignore){
             //Draws a new pixel at the given point
             XFillRectangle(x11.Disp, x11.Pix, x11.gc, currentX, currentY, Width/X_PIXEL_NUMBER, Height/Y_PIXEL_NUMBER);
             currentX += Width/X_PIXEL_NUMBER;
         }
-        nl = false;
+        ignore = false;
     }
 };
 
@@ -143,4 +162,10 @@ bool Entity::operator& (const Entity& b){
     bool YInRange = this->Bottom() >= b.Top() || this->Top() <= b.Bottom();
 
     return XInRange && YInRange;
+};
+
+void Entity::Print(void){
+};
+
+Entity::~Entity(void){
 };

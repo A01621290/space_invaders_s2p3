@@ -36,12 +36,6 @@ void Block::Update(void){
         std::cout << "Updating block. Last hit: " << LastHit << std::endl <<
             << "Immunity: " << Immunity << endl;
 #endif
-    if(CurrentFrame < Anim_Frames){
-        CurrentFrame++;
-    }
-    if(CurrentFrame >= Anim_Frames){
-        CurrentFrame = 0;
-    }
     if(Immunity && LastHit++ > UPDATE_FPS * 1.5){
             Immunity = false;
     }

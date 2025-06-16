@@ -17,12 +17,12 @@
 #include <vector>
 
 //Macro for parsing and allocating XColor colors
-#define color(display, colormap, name, var_name)\
-    XParseColor(display, colormap, name, &(var_name));\
-    XAllocColor(display, colormap, &(var_name));
+#define color(r, g, b, var_name)\
+    var_name = RGB(r, g, b);\
+    XAllocColor(Disp,Cmap, &(var_name));
 
 //Total number of colors
-#define TOTAL_COLORS 7
+#define TOTAL_COLORS 11
 
 //Enumeration storing each color's position in the X11::Color vector
 enum class X11_Col{
@@ -32,9 +32,15 @@ enum class X11_Col{
     blue = 3,
     light_blue = 4,
     red = 5,
-    gray = 6
+    gray = 6,
+    black = 7,
+    white = 8,
+    green = 9,
+    orange = 10,
 };
 
+//Enumeration for storing each color's letter code in the
+//asset files
 enum class X11_Col_char{
     dark_blue = 'd',
     purple = 'p',
@@ -42,8 +48,15 @@ enum class X11_Col_char{
     blue = 'b',
     light_blue = 'l',
     red = 'r',
-    gray = 'g'
+    gray = 'g',
+    black = 'n',
+    white = 'w',
+    green = 'v',
+    orange = 'o'
 };
+
+//Function to allocate a valid XColor using RGB
+XColor RGB(unsigned short Red, unsigned short Green, unsigned short Blue);
 
 class X11{
     public:
@@ -62,5 +75,6 @@ class X11{
         X11(float Width, float Height, int XPos, int YPos, std::string Name); //Create an X11 window
         ~X11(void); //Free resources used by the window and terminate the object
         void Open(void);    //Open the X11 Window
+        void GetInput(void);
         void Update(void);    //Updates and draws the X11 Display
 };

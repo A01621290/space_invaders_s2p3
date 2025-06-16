@@ -41,6 +41,7 @@ Entity::Entity(
     Immunity = false;//Starts at false
     LastHit = 0;
     CurrentFrame = 0;
+    FrameCounter = 0;
 
     //Read asset_n into the Assets vector
     Assets.resize(Anim_Frames);
@@ -78,7 +79,6 @@ void Entity::Draw(const X11& x11){
 
     //For each char in the current frame of assets it will paint
     //a square
-    std::cout << "Drawing frame " << CurrentFrame << std::endl;
     for(char c : Assets[CurrentFrame]){
         switch (c) {
             case (static_cast<char>(X11_Col_char::dark_blue)):
@@ -114,6 +114,26 @@ void Entity::Draw(const X11& x11){
             case (static_cast<char>(X11_Col_char::gray)):
                 {
                     XSetForeground(x11.Disp, x11.gc, x11.Color[static_cast<int>(X11_Col::gray)].pixel);
+                    break;
+                }
+            case (static_cast<char>(X11_Col_char::black)):
+                {
+                    XSetForeground(x11.Disp, x11.gc, x11.Color[static_cast<int>(X11_Col::black)].pixel);
+                    break;
+                }
+            case (static_cast<char>(X11_Col_char::white)):
+                {
+                    XSetForeground(x11.Disp, x11.gc, x11.Color[static_cast<int>(X11_Col::white)].pixel);
+                    break;
+                }
+            case (static_cast<char>(X11_Col_char::green)):
+                {
+                    XSetForeground(x11.Disp, x11.gc, x11.Color[static_cast<int>(X11_Col::green)].pixel);
+                    break;
+                }
+            case (static_cast<char>(X11_Col_char::orange)):
+                {
+                    XSetForeground(x11.Disp, x11.gc, x11.Color[static_cast<int>(X11_Col::orange)].pixel);
                     break;
                 }
             case ' ':

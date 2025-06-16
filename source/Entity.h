@@ -2,6 +2,8 @@
  * This header defines the abstract class Entity
  * and its sub-classes (Player, Alien, Projectile,
  * Block), as well as its methods and operators
+ *
+ * Author: José Rodrigo Cisneros Murillo
  */
 
 #pragma once
@@ -21,6 +23,7 @@
 #define BASE_ALI_HP 5
 #define BASE_PRJ_HP 1
 #define BASE_BLK_HP 2
+#define BASE_SHT_COOLDOWN UPDATE_FPS * 3
 
 //Enum class defining all entity types
 enum class Ent_type{
@@ -44,7 +47,8 @@ class Entity{
         bool Immunity;                      //Determines if it is currently immune
         bool Alive;                         //If its dead or alive
         unsigned int Anim_Frames;           //Number of frames in the animation
-        unsigned int LastHit;
+        unsigned int LastHit;               //How many frames ago was entity hit
+        long long FrameCounter;             //A counter of total frames
         unsigned int CurrentFrame;          //Current frame playing in the animation
         std::string FirstAssetName;         //Name of the first asset
         std::vector<std::string> Assets;    /*Vector of strings to the asset files
@@ -96,12 +100,11 @@ class Projectile final : public Entity{
     public:
         Projectile(
                 float XPos, float YPos,
-                unsigned int Width, unsigned int Height,
-                short Hp,
-                unsigned int Anim_Frames, std::string FirstAssetName,
+                unsigned int Anim_Frames,
+                std::string FirstAssetName,
                 Ent_type Type,
-                float XSpeed, float YSpeed,
-                float Acceleration
+                double long XSpeed, double long YSpeed,
+                double long Acceleration
                 );
         void Update(void) override;
         void Collision(Entity& b) override;
@@ -111,19 +114,18 @@ class Projectile final : public Entity{
 //Player class
 class Player final : public Entity{
     private:
-        float XSpeed, YSpeed;   //Player's speed
+        float XSpeed;   //Player's speed
         bool CanShoot;
+        bool Moving;
         unsigned int ShootCooldown;
     public:
         Player(
                 float XPos, float YPos,
-                unsigned int Width, unsigned int Height,
-                short Hp,
-                unsigned int Anim_Frames, std::string FirstAssetName,
-                Ent_type Type
+                unsigned int Width, unsigned int Height
               );
-        void Update(void) override;
-        void Collision(Entity& b) override;
+        void setXSpeed(float _XSpeed); //Sets the player XSpeed to a float
+        void Update(void) override; //Will update the current animation frame, as well as moving the player
+        void Collision(Entity& b) override; //Will lower hp if in contact with an alien projectile
         void Shoot(void);   //Method to invoke projectiles that go to aliens
 };
 
@@ -136,9 +138,7 @@ class Alien final : public Entity{
         Alien(
                 float XPos, float YPos,
                 unsigned int Width, unsigned int Height,
-                short Hp,
-                unsigned int Anim_Frames, std::string FirstAssetName,
-                Ent_type Type
+                unsigned int Anim_Frames, std::string FirstAssetName
                 );
         void Shoot(float towardsX, float towardsY);
         void Update(void) override;

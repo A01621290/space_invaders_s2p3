@@ -1,16 +1,17 @@
+//This is the implementation file of the Block
+//sub-class defined in the Entity.h header
 #include "Entity.h"
 
 Block::Block(
                 float XPos, float YPos,
-                unsigned int Width, unsigned int Height,
-                unsigned int Anim_Frames, std::string FirstAssetName
+                unsigned int Width, unsigned int Height
             )
     :
         Entity(
                 XPos, YPos,
                 Width, Height,
                 BASE_BLK_HP,
-                Anim_Frames, FirstAssetName,
+                2, "./assets/block/block",
                 Ent_type::block
                 )
 {
@@ -22,11 +23,12 @@ Block::Block(
 void Block::Collision(Entity &b){
     if(
             *this & b &&
-            b.getType() == Ent_type::player_projectile &&
+            (b.getType() == Ent_type::player_projectile ||
+             b.getType() == Ent_type::alien)&&
             Immunity == false
       ){
         Hp--;
-        CurrentFrame++;
+        CurrentFrame == 0 ? CurrentFrame++ : CurrentFrame;
     }
 };
 
@@ -42,6 +44,9 @@ void Block::Update(void){
     else{
         LastHit = 0;
     }
+
+    //Checks if still alive
+    Hp <= 0 ? Alive = 0 : Alive;
 };
 
 Block::~Block(void){

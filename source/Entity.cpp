@@ -1,6 +1,28 @@
 //This is the implementation file of the entity class and the
 //getAsset function
 #include "Entity.h"
+#include <thread>
+
+std::string getEntType(Ent_type t){
+    if(t==Ent_type::player){
+        return "player";
+    }
+    else if(t==Ent_type::player_projectile){
+        return "player_projectile";
+    }
+    else if(t==Ent_type::alien_projectile){
+        return "alien_projectile";
+    }
+    else if(t==Ent_type::alien){
+        return "alien";
+    }
+    else if(t==Ent_type::block){
+        return "block";
+    }
+    else{
+        return "Unknown";
+    }
+}
 
 //Read asset file into string
 std::string GetAsset(const std::string file_name){
@@ -171,20 +193,40 @@ void Entity::Draw(const X11& x11){
 
 //Operator overloading to compare entities' collision
 bool Entity::operator& (const Entity& b){
+    //std::this_thread::sleep_for(std::chrono::seconds(1));
     /*Left side of A is greater or equal to right side of B
      * OR
      * right side of A is lesser or equal to left side of B*/
-    bool XInRange = this->Left() >= b.Right() || this->Right() <= b.Left();
+    bool XInRange = this->Left() < b.Right() && this->Right() > b.Left();
 
     /*Bottom of object A is greater than top of B
      * OR
      * Top of A is lesser than bottom of B*/
-    bool YInRange = this->Bottom() >= b.Top() || this->Top() <= b.Bottom();
+    bool YInRange = this->Top() < b.Bottom() && this->Bottom() > b.Top();
+
+    //std::cout << "A: [" << Left() << ", " << Right() << "] x [" << Top() << ", " << Bottom() << "]\n";
+    //std::cout << "B: [" << b.Left() << ", " << b.Right() << "] x [" << b.Top() << ", " << b.Bottom() << "]\n";
+    //std::cout << "Collision: " << (XInRange && YInRange) << "\n";
 
     return XInRange && YInRange;
 };
 
+bool Entity::getAlive(void){
+    return Alive;
+}
+
 void Entity::Print(void){
+    std::cout << "\tPosition: ("<<XPos<<", "<<YPos<<" )\n"<<
+        "\tSize: "<<Width<<" x "<<Height<<std::endl<<
+        "\tHealth: " <<Hp<<std::endl<<
+        "\tAlive: " << (Alive ? "Yes" : "No") << std::endl<<
+        "\tAnimation frames: "<<Anim_Frames<<std::endl<<
+        "\tLast hit: "<<LastHit<< " frames ago.\n"<<
+        "\tLocal frame counter: "<<FrameCounter<<std::endl<<
+        "\tCurrent Animation frame: " <<CurrentFrame<<std::endl<<
+        "\tFirst asset name: "<<FirstAssetName<<"_0"<<std::endl<<
+        "\tEntity type: "<<getEntType(Type)<<std::endl;
+
 };
 
 Entity::~Entity(void){

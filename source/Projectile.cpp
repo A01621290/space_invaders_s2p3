@@ -1,3 +1,5 @@
+//This is the implementation file of the projectile
+//sub-class defined in the Entity.h header
 #include "Entity.h"
 
 Projectile::Projectile(
@@ -22,7 +24,10 @@ Projectile::Projectile(
 }
 
 void Projectile::Update(void){
-    if(FrameCounter== UPDATE_FPS * 25){
+    if(YPos > 2000 || YPos < -200){
+        Hp--;
+    }
+    if(FrameCounter== UPDATE_FPS){
         CurrentFrame == 0 ? CurrentFrame = 1 : CurrentFrame = 0;
         FrameCounter = 0;
     }
@@ -49,6 +54,9 @@ void Projectile::Update(void){
     //Accelerates the shot
     YSpeed += Acceleration;
     FrameCounter++;
+    
+    //Checks if still alive
+    Hp <= 0 ? Alive = 0 : Alive;
 }
 
 void Projectile::Collision(Entity &b){

@@ -1,3 +1,5 @@
+//This is the implementation file of the player
+//sub-class defined in the Entity.h header
 #include "Entity.h"
 
 Player::Player(
@@ -52,6 +54,9 @@ void Player::Update(void){
             ShootCooldown--;
         }
     }
+
+    //Checks if still alive
+    Hp <= 0 ? Alive = 0 : Alive;
 }
 
 void Player::Collision(Entity& b){
@@ -63,13 +68,14 @@ void Player::Collision(Entity& b){
     }
 }
 
-void Player::Shoot(void){
-    Projectile p(
+Projectile *Player::Shoot(void){
+    Projectile *p = new Projectile(
             this->Left() + Width/2, this->Top(),
             2,
             "./assets/player_projectile/projectile",
             Ent_type::player_projectile,
-            0.0, 4.5,
-            3.0
+            0.0, BASE_PRJ_SPEED,
+            BASE_PRJ_ACC
             );
+    return p;
 }

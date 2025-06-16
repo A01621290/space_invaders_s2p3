@@ -12,10 +12,25 @@
 #include <thread>
 #include "Entity.h"
 #include "WindowManager.h"
+#define X11_WIDTH 0.4
+#define X11_HEIGHT 0.75
+#define X11_NAME "Space Invaders"
+#define BASE_ALIEN_NUM 16
+#define BASE_BLOCK_BUNCHES 6
 
 class Game{
-    X11 X;
-    Player Player;
-    std::vector<Alien *>Aliens;
-    std::vector<Block *>Blocks;
+    private:
+        X11 *X;
+        Player *Plyr;
+        std::vector<Alien *>Aliens;
+        std::vector<Block *>Blocks;
+        std::vector<Projectile *>Projectiles;
+    public:
+        void SetInitialValues(void);    //Sets initial values
+        Game(void);                     //Creates new game object
+        void Reset(void);               //Resets game object
+        void Open(void);                //Opens the game
+        void Update(void);              //Updates gameobject
+        void Draw(void);                //Draws game object
+        ~Game(void);
 };

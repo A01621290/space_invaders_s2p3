@@ -1,18 +1,11 @@
-#include "./source/Entity.h"
-#include "./source/WindowManager.h"
-
+#include "./source/GameManager.h"
+#define FPS (1/600) * 1000
 int main(int argc, char *argv[]){
-    X11 x(0.5, 0.75, 10, 10, "XD");
-    Block b(
-            100.0, 100.0,
-            BASE_WIDTH, BASE_HEIGHT,
-            2, "./assets/block/block"
-            );
-    std::cout<<"Pasa de aquí";
-    x.Open();
+    Game game;
+    game.Open();
     for(;;){
-        x.Update();
-        b.Draw(x);
-        b.Update();
+        game.Update();
+        game.Draw();
+        std::this_thread::sleep_for(std::chrono::milliseconds(FPS));
     }
 }

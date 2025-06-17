@@ -34,7 +34,7 @@ X11::X11(float Width, float Height, int XPos, int YPos, std::string Name)
     XGetWindowAttributes(Disp, Win, &Att);
 
     //Window Input
-    XSelectInput(Disp, Win,  ExposureMask | ButtonPress | KeyPressMask);
+    XSelectInput(Disp, Win,  ExposureMask | ButtonPressMask | KeyPressMask);
 
     //GC and Pixmap
     Pix = XCreatePixmap(Disp, Win, Att.width, Att.height, DefaultDepth(Disp, Scr));
@@ -75,6 +75,10 @@ void X11::Update(void)
 void X11::GetInput(void){
     if(XPending(Disp) > 0){
         XNextEvent(Disp, &Event);
+        if(Event.type == KeyPress)
+        {
+               Key = XLookupKeysym(&Event.xkey, 0);
+        }
     }
 }
 

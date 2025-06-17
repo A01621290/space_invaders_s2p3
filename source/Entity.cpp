@@ -26,7 +26,6 @@ std::string getEntType(Ent_type t){
 
 //Read asset file into string
 std::string GetAsset(const std::string file_name){
-    std::cout << "Opening: " << file_name << std::endl;
     std::ifstream file(file_name);
     std::string read;
     std::string asset;
@@ -39,7 +38,6 @@ std::string GetAsset(const std::string file_name){
     }
     file.close();
 
-    std::cout << "Read asset: " << std::endl << asset << std::endl;
     return asset;
 };
 
@@ -68,10 +66,8 @@ Entity::Entity(
     //Read asset_n into the Assets vector
     Assets.resize(Anim_Frames);
     for(int i = 0; i <= Anim_Frames - 1; i++){
-        std::cout << "Anim frame " << i << std::endl;
         Assets[i] = GetAsset(FirstAssetName + '_' + std::to_string(i));
     }
-    std::cout << "New entity with following parameters.\n";
 };
 
 

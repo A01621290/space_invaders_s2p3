@@ -12,6 +12,7 @@
 
 #pragma once
 #include <X11/Xlib.h>
+#include <X11/keysym.h>
 #include <string>
 #include <iostream>
 #include <vector>
@@ -55,12 +56,19 @@ enum class X11_Col_char{
     orange = 'o'
 };
 
+enum class X11_Input{
+    left,
+    right,
+    shoot
+};
+
 //Function to allocate a valid XColor using RGB
 XColor RGB(unsigned short Red, unsigned short Green, unsigned short Blue);
 
 class X11{
     public:
         float Width, Height;        //Relative width and height with respect to the screen
+        KeySym Key;
         int XPos, YPos;             //X and Y position of the window in the screen
         Display *Disp;              //Pointer to a display structure used in the X Server windowing system
         int Scr;                    //int representing the screen number

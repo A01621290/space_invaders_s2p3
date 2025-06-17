@@ -7,18 +7,16 @@ Projectile::Projectile(
     unsigned int Anim_Frames,
     std::string FirstAssetName,
     Ent_type Type,
-    double long XSpeed, double long YSpeed,
-    double long Acceleration
+    double long XSpeed, double long YSpeed
                 )
     :
         Entity(XPos,YPos,
-                BASE_WIDTH/4, BASE_HEIGHT/2,
+                BASE_WIDTH/3, BASE_HEIGHT/1.5,
                 BASE_PRJ_HP,
                 2,
                 FirstAssetName,
                 Type)
 {
-    this->Acceleration = Acceleration;
     this->XSpeed = XSpeed;
     this->YSpeed = YSpeed;
 }
@@ -28,18 +26,13 @@ void Projectile::Update(void){
         Hp--;
     }
     if(FrameCounter== UPDATE_FPS){
-        CurrentFrame == 0 ? CurrentFrame = 1 : CurrentFrame = 0;
+        CurrentFrame == 0 ? (CurrentFrame = 1) : CurrentFrame = 0;
         FrameCounter = 0;
     }
-    std::cout << "Speed: (" << XSpeed << ", " << YSpeed << ")\n";
-    std::cout << "Acceleration: " << Acceleration << std::endl;
+    FrameCounter++;
     //Changes position by the given speed
     if(XSpeed != 0){
-        if(XSpeed > 0)
-            XPos += XSpeed;
-        else if(XSpeed < 0)
-            XPos -= XSpeed;
-        XSpeed += Acceleration;
+        XPos += XSpeed;
     }
 
     //All player shots will go up, and all other shots
@@ -51,16 +44,22 @@ void Projectile::Update(void){
         YPos += YSpeed;
     }
 
-    //Accelerates the shot
-    YSpeed += Acceleration;
-    FrameCounter++;
     
     //Checks if still alive
-    Hp <= 0 ? Alive = 0 : Alive;
+    Alive = Hp > 0;
 }
 
 void Projectile::Collision(Entity &b){
     if(*(this) & b){
-        Hp--;
+        if(Type == Ent_type::alien_projectile){
+            if(b.getType() != Ent_type::alien){
+                Hp--;
+            }
+        }
+        if(Type == Ent_type::player_projectile){
+            if(b.getType() != Ent_type::player){
+                Hp--;
+            }
+        }
     }
 }

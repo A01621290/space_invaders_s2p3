@@ -46,7 +46,7 @@ void Block::Update(void){
     }
 
     //Checks if still alive
-    Hp <= 0 ? Alive = 0 : Alive;
+    (Hp <= 0) ? Alive = 0 : Alive;
 };
 
 Block::~Block(void){

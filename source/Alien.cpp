@@ -19,30 +19,48 @@ Alien::Alien(
 {
     CanShoot = false;
     CanMove = true;
-    ShootCooldown = BASE_SHT_COOLDOWN * std::rand() % 10;
+    ShootCooldown = ALIEN_SHT_COOLDOWN;
 }
 
 Projectile *Alien::Shoot(float towardsX, float towardsY){
+    CanShoot = false;
+    ShootCooldown = ALIEN_SHT_COOLDOWN;
+    //deltaX
+    float _xdir = towardsX-(XPos+Width/2);
+    float _ydir = towardsY-(YPos+Height/2);
+    float hyp = std::sqrt(_xdir*_xdir + _ydir*_ydir);
+    float _yspeed = BASE_PRJ_SPEED * (_ydir/hyp);
+    float _xspeed = BASE_PRJ_SPEED * (_xdir/hyp);
+
     Projectile *p = new Projectile(
             this->Left() + Width/2, this->Top(),
             2,
             "./assets/alien_projectile/projectile",
             Ent_type::alien_projectile,
-            BASE_PRJ_SPEED/2, BASE_PRJ_SPEED/2,
-            BASE_PRJ_ACC/2
+            _xspeed, _yspeed
             );
     return p;
 }
 
 void Alien::Update(void){
-    if(FrameCounter == UPDATE_FPS * 10){
+    if(!CanShoot){
+        if(ShootCooldown == 0){
+            CanShoot = true;
+        }
+        else{
+            ShootCooldown--;
+        }
+    }
+    if(FrameCounter == UPDATE_FPS * ALIEN_WAIT_TIME){
         if(CanMove){
             YPos += Height;
         }
-        CanShoot = true;
         FrameCounter = 0;
     }
     FrameCounter++;
+    if(Hp <= BASE_ALI_HP/2){
+        CurrentFrame = 1;
+    }
 }
 
 void Alien::reduceShootCooldown(void){

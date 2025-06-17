@@ -1,6 +1,5 @@
 /*
  * This header defines the abstract class Entity
- * and its sub-classes (Player, Alien, Projectile,
  * Block), as well as its methods and operators
  *
  * Author: José Rodrigo Cisneros Murillo
@@ -20,13 +19,16 @@
 #define UPDATE_FPS 40
 #define BASE_WIDTH 40
 #define BASE_HEIGHT 40
-#define BASE_PLY_HP 15
+#define BASE_PLY_HP 20
 #define BASE_ALI_HP 5
 #define BASE_PRJ_HP 1
-#define BASE_PRJ_SPEED 4
-#define BASE_PRJ_ACC 2
+#define BASE_PRJ_SPEED 1
+#define BASE_PLYR_SPEED 0.25
 #define BASE_BLK_HP 2
-#define BASE_SHT_COOLDOWN UPDATE_FPS * 3
+#define ALIEN_WAIT_TIME 100
+#define BASE_SHT_COOLDOWN UPDATE_FPS * 2
+#define ALIEN_SHT_COOLDOWN BASE_SHT_COOLDOWN * 20
+#define SIMULATE_W 700
 
 //Enum class defining all entity types
 enum class Ent_type{
@@ -46,8 +48,6 @@ std::string GetAsset(const std::string file_name);
 //Base Abstract Entity class
 class Entity{
     protected:
-        float XPos, YPos;                   //X and Y positions
-        unsigned int Width, Height;         //Width and Height
         bool Immunity;                      //Determines if it is currently immune
         bool Alive;                         //If its dead or alive
         unsigned int Anim_Frames;           //Number of frames in the animation
@@ -59,6 +59,8 @@ class Entity{
                                               for sprites or animations*/
         Ent_type Type;                      //Enum value determining the kind of entity it is dealing with
     public:
+        float XPos, YPos;                   //X and Y positions
+        unsigned int Width, Height;         //Width and Height
         short Hp;                           //Current HP
         Entity(
                 float XPos, float YPos,
@@ -101,15 +103,14 @@ class Block final : public Entity{
 //Projectile class
 class Projectile final : public Entity{
     private:
-        float XSpeed, YSpeed, Acceleration;
+        float XSpeed, YSpeed;
     public:
         Projectile(
                 float XPos, float YPos,
                 unsigned int Anim_Frames,
                 std::string FirstAssetName,
                 Ent_type Type,
-                double long XSpeed, double long YSpeed,
-                double long Acceleration
+                double long XSpeed, double long YSpeed
                 );
         void Update(void) override;
         void Collision(Entity& b) override;
@@ -120,10 +121,10 @@ class Projectile final : public Entity{
 class Player final : public Entity{
     private:
         float XSpeed;   //Player's speed
-        bool CanShoot;
+    public:
+        volatile bool CanShoot;
         bool Moving;
         unsigned int ShootCooldown;
-    public:
         Player(
                 float XPos, float YPos,
                 unsigned int Width, unsigned int Height
@@ -138,10 +139,10 @@ class Player final : public Entity{
 //Aliens will only shoot when moving
 class Alien final : public Entity{
     private:
-        bool CanShoot;
         bool CanMove;
         unsigned int ShootCooldown;
     public:
+        bool CanShoot;
         Alien(
                 float XPos, float YPos,
                 unsigned int Width, unsigned int Height

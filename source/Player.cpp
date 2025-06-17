@@ -42,7 +42,15 @@ void Player::Update(void){
     }
 
     //Will move the player
-    XPos += XSpeed;
+    if(XPos < 0 || XPos > SIMULATE_W){
+        if(
+                XPos > SIMULATE_W && XSpeed < 0 ||
+                XPos < 0 && XSpeed > 0)
+            XPos += XSpeed;
+    }
+    else{
+            XPos += XSpeed;
+    }
 
     //If it can't shoot will either decrease the cooldown
     //or re-enable the ability to shoot
@@ -56,7 +64,7 @@ void Player::Update(void){
     }
 
     //Checks if still alive
-    Hp <= 0 ? Alive = 0 : Alive;
+    (Hp <= 0) ? (Alive = 0) : Alive;
 }
 
 void Player::Collision(Entity& b){
@@ -69,13 +77,14 @@ void Player::Collision(Entity& b){
 }
 
 Projectile *Player::Shoot(void){
+    CanShoot = false;
+    ShootCooldown = BASE_SHT_COOLDOWN;
     Projectile *p = new Projectile(
             this->Left() + Width/2, this->Top(),
             2,
             "./assets/player_projectile/projectile",
             Ent_type::player_projectile,
-            0.0, BASE_PRJ_SPEED,
-            BASE_PRJ_ACC
+            0.0, BASE_PRJ_SPEED
             );
     return p;
 }
